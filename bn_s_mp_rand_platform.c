@@ -84,19 +84,26 @@ static mp_err s_read_getrandom(void *p, size_t n)
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/syscall.h>
 
 static mp_err s_read_urandom(void *p, size_t n)
 {
    int fd;
    char *q = (char *)p;
 
+#ifndef __twizzler__
    do {
       fd = open(MP_DEV_URANDOM, O_RDONLY);
    } while ((fd == -1) && (errno == EINTR));
    if (fd == -1) return MP_ERR;
+#endif
 
    while (n > 0u) {
+#ifndef __twizzler__
       ssize_t ret = read(fd, p, n);
+#else
+	  ssize_t ret = syscall(SYS_getrandom, q, n, 0);
+#endif
       if (ret < 0) {
          if (errno == EINTR) {
             continue;
