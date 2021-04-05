@@ -1,5 +1,6 @@
 #include "tommath_private.h"
 #ifdef BN_MP_GET_DOUBLE_C
+#ifndef __KERNEL__
 /* LibTomMath, multiple-precision integer library -- Tom St Denis */
 /* SPDX-License-Identifier: Unlicense */
 
@@ -15,4 +16,5 @@ double mp_get_double(const mp_int *a)
    }
    return (a->sign == MP_NEG) ? -d : d;
 }
+#endif
 #endif
